@@ -17,6 +17,7 @@ body {
     background-color: #ff6622;
     color: #ffffff;
     padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 .menubar .title {
     display: inline-block;
@@ -41,6 +42,7 @@ body {
     border-radius: 12px;
     text-align: center;
     padding: 8px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .addCourse .title {
@@ -62,7 +64,8 @@ body {
     margin: 12px;
     border-radius: 12px;
     text-align: center;
-    padding: 4px;   
+    padding: 4px; 
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);  
 }
 .noCourseAdded {
     padding: 12px;
@@ -107,7 +110,7 @@ body {
 .dialogBoxContent .disabledContent {
     position: absolute;
     background-color: #ffffff;
-    opacity: 0.5;
+    opacity: 0.6;
     left: 0;
     top: 0;
     width: 100%;
@@ -118,7 +121,7 @@ body {
     position: absolute;
     background-color: #ffffff;
     border-radius: 12px;
-    opacity: 0.5;
+    opacity: 0.6;
     left: 0;
     bottom: 0;
     width: 100%;
@@ -174,6 +177,10 @@ body {
 }
 .courseOptionList {
     max-height: 300px;
+    overflow-y: scroll;
+}
+.sectionOptionList {
+    max-height: 240px;
     overflow-y: scroll;
 }
 .searchCourse {
@@ -279,6 +286,36 @@ body {
     vertical-align: middle;
     padding: 2px;
 }
+
+
+
+
+
+
+
+
+
+
+.pdfContainer {
+    width: 600px;
+    background-color: #FFFFFF;
+    text-align: center;
+    padding: 6px;
+}
+.routineTable {
+    padding: 6px;
+}
+.routineTable table {
+    width: 100%;
+    font-size: 10px;
+    border: 1px solid #000000;
+    border-collapse: collapse;
+}
+.routineTable td, .routineTable th {
+    border: 1px solid #000000;  
+    text-align: center;
+    padding: 6px;
+}
 </style>
 <body>
     <div class="menubar">
@@ -308,13 +345,52 @@ body {
             </div>
         </div>
 
-        <div class="addCourse">
+        <div class="addCourse" onclick="downloadPDF()">
             <div class="icon">
                 <i class="fa fa-download"></i>
             </div>
             <div class="title">Download Routine PDF</div>
         </div>       
     </div>
+
+
+    <div style="display: none">
+        <div class="pdfContainer" id="pdfContainer">
+            <table style="margin: auto;">
+                <tr>
+                    <td><img src="UIULogo.png" style="width: 70px; padding: 12px; padding-left: 0;" /></td>
+                    <td style="text-align: center;">
+                        <div style="font-size: 12px; margin: 4px;"><b>United</b> International <b>University</b></div>
+                        <div style="font-size: 16px; margin: 4px; font-weight: bold;">Final Exam Schedule</div>
+                        <div style="font-size: 12px; margin: 4px;">Spring 2023</div>
+                    </td>
+                </tr>
+
+            </table>
+            <div class="routineTable">
+                <table id="routineTable">
+                    <thead>
+                        <tr>
+                            <th>Dept</th>
+                            <th>Course Code</th>
+                            <th>Course Title</th>
+                            <th>Section</th>
+                            <th>Teacher</th>
+                            <th>Exam Date</th>
+                            <th>Exam Time</th>
+                            <th>Room</th>
+                        </tr>                
+                    </thead>
+                    <tbody id="routineTableBody">
+                        
+                    </tbody>
+                </table>
+                <br/><br/>
+                <div style="font-size: 10px; font-style: italic;">Generated from <span style="color: #ff6622; font-weight: bold">nurulalamador.github.io/UIUExamRoutine</span></div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="dialogBoxBackground hidden" id="dialogBox">
         <div class="dialogBox">
@@ -366,7 +442,7 @@ body {
                         <i class="fa fa-caret-down"></i>
                     </div>
                     <div class="selectOptions hidden" id="sectionOptions">
-                        <div class="courseOptionList" id="sectionOptionList"></div>
+                        <div class="sectionOptionList" id="sectionOptionList"></div>
                     </div>
                 </div>
             </div>
@@ -382,6 +458,8 @@ body {
     </div>
 
     <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
 <script>
     var selectedCourse = [];
 
@@ -413,14 +491,14 @@ body {
                 if(a!=0) {
                     var element = {};
                     element.dept = row[0];    
-                    element.code = row[1];    
-                    element.title = row[2];   
+                    element.code = row[1].replace(/\//g, " / ");    
+                    element.title = row[2].replace(/\//g, " / ");  
                     element.short = row[2].match(/\b([A-Z])/g).join('');    
                     element.section = row[3]; 
                     element.teacher = row[4]; 
-                    element.date = row[5];    
+                    element.date = row[5];   
                     element.time = row[6];    
-                    element.room = row[7];    
+                    element.room = row[7].replace(/                                                                                                                                                                                                                       /g, "<br/>");    
                     element.id = "exam"+int4(a);    
                     mainRoutine.push(element);
                 }
@@ -569,13 +647,13 @@ body {
 
     function generateCourseList() {
         document.getElementById("addedCourseList").innerHTML = "";
+        document.getElementById("routineTableBody").innerHTML = "";
+        document.getElementById("noCourseAdded").classList.add("hidden");
 
         selectedCourse.forEach(function(el) {
             var currentCourse = mainRoutine.filter(function(elem) {
                 return elem.id == el;
             });
-
-            document.getElementById("noCourseAdded").classList.add("hidden");
 
             document.getElementById("addedCourseList").innerHTML += 
             `
@@ -630,6 +708,20 @@ body {
                     </div>
                 </div>
             `;
+
+            document.getElementById("routineTableBody").innerHTML += 
+            `
+            <tr>
+                <td>${currentCourse[0].dept}</td>
+                <td>${currentCourse[0].code}</td>
+                <td>${currentCourse[0].title}</td>
+                <td>${currentCourse[0].section}</td>
+                <td>${currentCourse[0].teacher}</td>
+                <td>${currentCourse[0].date}</td>
+                <td>${currentCourse[0].time}</td>
+                <td>${currentCourse[0].room}</td>
+            </tr>
+            `;
         });
 
 
@@ -637,6 +729,22 @@ body {
 
     document.getElementById("closeDialogBox").onclick = function() {
         document.getElementById("dialogBox").classList.add("hidden");
+    }
+
+
+    function downloadPDF() {
+        var jsPDF = jspdf.jsPDF;
+
+        var pdf = new jsPDF({
+            orientation: "landscape",
+            unit: "px",
+            format: [612, 612]
+        });
+        pdf.html(document.getElementById("pdfContainer"), {
+            callback: function (pdf) {
+                pdf.save("Spring2023FinalRoutine.pdf");
+            }
+        });
     }
     </script>
 </body>
