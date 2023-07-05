@@ -338,13 +338,7 @@ function downloadPDF() {
         });
         pdf.html(document.getElementById("pdfContainer"), {
             callback: function (pdf) {
-                var base64 = pdf.output('blob');
-                console.log(base64);
-                var blobUrl = URL.createObjectURL(base64);
-                var link = document.createElement("a"); // Or maybe get it from the current document
-                link.href = blobUrl;
-                link.download = "Summer2023MidRoutine.pdf";
-                link.click();
+                pdf.output('pdfjsnewwindow', 'Summer2023MidRoutine.pdf');
             }
         });
     }
