@@ -10,6 +10,8 @@ checkConnection();
 
 document.getElementById("welcomeTitle").innerHTML = welcomeTitle;
 document.getElementById("welcomeSemiTitle").innerHTML = welcomeSemiTitle;
+document.getElementById("welcomeTitleAlt").innerHTML = welcomeTitle;
+document.getElementById("welcomeSemiTitleAlt").innerHTML = welcomeSemiTitle;
 
 schoolDepartments.forEach(function(el) {
     document.getElementById("schoolList").innerHTML += 
