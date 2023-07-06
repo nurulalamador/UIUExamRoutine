@@ -340,10 +340,11 @@ function downloadPDF() {
         });
         pdf.html(document.getElementById("pdfContainer"), {
             callback: function (pdf) {
-                var base64 = pdf.output('datauristring', 'Summer2023MidRoutine.pdf');
+                var randomDigit = Math.floor(Math.random() * 100000);
+                var base64 = pdf.output('datauristring', 'Summer2023MidRoutine"+randomDigit+".pdf');
                 var link = document.createElement("a"); // Or maybe get it from the current document
                 link.href = base64;
-                link.download = "Summer2023MidRoutine.pdf";
+                link.download = "Summer2023MidRoutine"+randomDigit+".pdf";
                 link.click();
             }
         });
