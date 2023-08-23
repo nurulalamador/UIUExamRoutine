@@ -1,0 +1,15 @@
+var welcomeTitle = "Final Exam Schedule";
+var welcomeSemiTitle = "Summer 2023";
+
+var schoolDepartments = [
+	{
+		school: "School of Science & Engineering",
+		dept: "BSCSE & BSEEE",
+		code: "CSEEEE"
+	},
+	{
+		school: "School of Business & Economics",
+		dept: "BBA, BBA in AIS & BSECO",
+		code: "BBABSECO"
+	}
+]
