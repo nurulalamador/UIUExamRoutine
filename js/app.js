@@ -341,10 +341,10 @@ function downloadPDF() {
         pdf.html(document.getElementById("pdfContainer"), {
             callback: function (pdf) {
                 var randomDigit = Math.floor(Math.random() * 100000);
-                var base64 = pdf.output('datauristring', welcomeSemiTitle.replace(/\s+/g, "")+welcomeTitle.replace(/\s+/g, "")+randomDigit+".pdf');
+                var base64 = pdf.output('datauristring', welcomeSemiTitle.replace(/\s+/g, "")+welcomeTitle.replace(/\s+/g, "")+randomDigit+".pdf");
                 var link = document.createElement("a"); // Or maybe get it from the current document
                 link.href = base64;
-                link.download = "Summer2023MidRoutine"+randomDigit+".pdf";
+                link.download = welcomeSemiTitle.replace(/\s+/g, "")+welcomeTitle.replace(/\s+/g, "")+randomDigit+".pdf";
                 link.click();
             }
         });
