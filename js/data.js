@@ -1,4 +1,4 @@
-var welcomeTitle = "Mid-Term Exam Schedule";
+var welcomeTitle = "Final Exam Schedule";
 var welcomeSemiTitle = "Fall 2023";
 
 var schoolDepartments = [
